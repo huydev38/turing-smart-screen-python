@@ -168,6 +168,12 @@ def CustomStats():
     # print("Refresh custom stats")
     stats.Custom.stats()
 
+@async_job("Stock_Stats")
+@schedule(timedelta(seconds=config.THEME_DATA['STATS'].get('STOCK', {}).get("INTERVAL", 0)).total_seconds())
+def StockStats():
+    # logger.debug("Refresh Stock data")
+    stats.Stock.stats()
+
 
 @async_job("Weather_Stats")
 @schedule(timedelta(seconds=max(300.0, config.THEME_DATA['STATS'].get('WEATHER', {}).get("INTERVAL", 0))).total_seconds())

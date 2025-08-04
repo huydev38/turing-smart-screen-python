@@ -27,6 +27,7 @@ import os
 import platform
 import sys
 from typing import List
+from library.sensors.stock import StockPrice
 
 import babel.dates
 import requests
@@ -117,6 +118,25 @@ def display_themed_value(theme_data, value, min_size=0, unit=''):
         anchor=theme_data.get("ANCHOR", "lt"),
     )
 
+def display_stock_value(stock_theme_data, stocks_data):
+    y = stock_theme_data.get("Y", 0)
+    if stocks_data is None:
+        return
+    for stock_data in stocks_data:
+        if stock_data is None:
+            continue
+        else:
+            display.lcd.DisplayText(
+                text=f"{stock_data.name}: {stock_data.price:.2f} ({stock_data.volume}) {stock_data.difference:.2f}%)",
+                x=stock_theme_data.get("X", 0),
+                y= y,
+                font=config.FONTS_DIR + stock_theme_data.get("FONT", "roboto-mono/RobotoMono-Regular.ttf"),
+                font_size=stock_theme_data.get("FONT_SIZE", 10),
+                font_color=stock_theme_data.get("FONT_COLOR", (0, 0, 0)),
+                background_color=stock_theme_data.get("BACKGROUND_COLOR", (255, 255, 255)),
+                background_image=get_theme_file_path(stock_theme_data.get("BACKGROUND_IMAGE", None)),
+            )
+            y+= 20
 
 def display_themed_percent_value(theme_data, value):
     display_themed_value(
@@ -840,6 +860,16 @@ class Custom:
                 theme_data = config.THEME_DATA['STATS']['CUSTOM'][custom_stat].get("LINE_GRAPH", None)
                 if theme_data is not None and last_values is not None:
                     display_themed_line_graph(theme_data=theme_data, values=last_values)
+
+
+class Stock:
+    @staticmethod
+    def stats():
+        stock_theme_data = config.THEME_DATA['STATS']['STOCK']
+        stocks_name = stock_theme_data.get("STOCKS", [])
+        stock = StockPrice()
+        stocks_data = stock.fetch_stock_data(stocks_name)
+        display_stock_value(stock_theme_data, stocks_data)
 
 
 class Weather:
