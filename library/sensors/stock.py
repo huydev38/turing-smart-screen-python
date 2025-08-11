@@ -1,7 +1,7 @@
 from vnstock import Trading
-from stock_price import StockPrice
+from library.sensors.stock_price import StockPrice  # Assuming stock_price.py is in the same directory
 
-class StockPrice():
+class StockData():
     def __init__(self, stock_names):
         self.stock_names = stock_names
 

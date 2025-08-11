@@ -1,5 +1,5 @@
 from vnstock import Trading
-from stock_price import StockPrice
+from stock_price import StockPrice  # Assuming stock_price.py is in the same directory
 import pandas as pd
 
 pd.set_option('display.max_columns', None)

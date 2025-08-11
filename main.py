@@ -230,6 +230,7 @@ if __name__ == "__main__":
     scheduler.DateStats(); time.sleep(0.25)
     scheduler.SystemUptimeStats(); time.sleep(0.25)
     scheduler.CustomStats(); time.sleep(0.25)
+    scheduler.StockStats(); time.sleep(0.25)
     scheduler.WeatherStats(); time.sleep(0.25)
     scheduler.PingStats(); time.sleep(0.25)
 

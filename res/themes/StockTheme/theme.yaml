@@ -1,0 +1,35 @@
+# This theme is an example of how to implement and display custom data in System Monitor
+# It is possible to add external sensor sources that come from custom Python code or external modules, and integrate them in an existing theme
+# This file is the theme part to display the custom data, custom data gathering must first be implemented in Python into the sensors_custom.py file
+# Names of the custom sensor classes listed here must be an exact match to class names in sensors_custom.py
+---
+display:
+  DISPLAY_ORIENTATION: landscape
+  DISPLAY_RGB_LED: 61, 184, 225
+
+static_images:
+  BACKGROUND:
+    PATH: background.png
+    X: 0
+    Y: 0
+    WIDTH: 480
+    HEIGHT: 320
+
+STATS:
+
+  # All custom sensor classes are listed under CUSTOM
+  STOCK:
+
+    # For now the refresh interval (in seconds) is the same for all custom data classes
+    INTERVAL: 10
+
+
+
+    # The name of the class must be an exact match to the class name in sensors_custom.py
+    STOCKS: ['HPG', 'TCB', 'VIC', 'FPT', 'SSI']
+    X: 0
+    Y: 0
+    FONT: roboto-mono/RobotoMono-Bold.ttf
+    FONT_SIZE: 20
+    BACKGROUND_IMAGE: background.png
+     

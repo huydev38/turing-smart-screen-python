@@ -27,7 +27,7 @@ import os
 import platform
 import sys
 from typing import List
-from library.sensors.stock import StockPrice
+from library.sensors.stock import StockData
 
 import babel.dates
 import requests
@@ -120,23 +120,39 @@ def display_themed_value(theme_data, value, min_size=0, unit=''):
 
 def display_stock_value(stock_theme_data, stocks_data):
     y = stock_theme_data.get("Y", 0)
+    font_color = (255,255,0) #yellow
     if stocks_data is None:
+        print("Stock data is None, skipping display.")
         return
     for stock_data in stocks_data:
         if stock_data is None:
+            print(f"Stock data for {stock_data.stock_name} is None, skipping display.")
             continue
         else:
+            if(stock_data.difference > 0):
+                stock_data.difference = "+" + f"{stock_data.difference:.2f}"
+                font_color = (0, 255, 0)  # green
+            elif(stock_data.difference < 0):
+                stock_data.difference = f"{stock_data.difference:.2f}"
+                font_color = (255, 0, 0)
+            if(stock_data.volume > 1000000):
+                stock_data.volume = f"{stock_data.volume / 1000000:.2f}M"
+            elif(stock_data.volume > 1000):
+                stock_data.volume = f"{stock_data.volume / 1000:.2f}K"
+            print(f"Displaying stock data for {stock_data.stock_name}")
             display.lcd.DisplayText(
-                text=f"{stock_data.name}: {stock_data.price:.2f} ({stock_data.volume}) {stock_data.difference:.2f}%)",
+                text=f"{stock_data.stock_name}: {stock_data.price} ({stock_data.difference}) - {stock_data.volume}",
                 x=stock_theme_data.get("X", 0),
                 y= y,
                 font=config.FONTS_DIR + stock_theme_data.get("FONT", "roboto-mono/RobotoMono-Regular.ttf"),
                 font_size=stock_theme_data.get("FONT_SIZE", 10),
-                font_color=stock_theme_data.get("FONT_COLOR", (0, 0, 0)),
+                font_color= font_color,
                 background_color=stock_theme_data.get("BACKGROUND_COLOR", (255, 255, 255)),
                 background_image=get_theme_file_path(stock_theme_data.get("BACKGROUND_IMAGE", None)),
+                align=stock_theme_data.get("ALIGN", "left"),
+                anchor=stock_theme_data.get("ANCHOR", "lt"),
             )
-            y+= 20
+            y+= 40
 
 def display_themed_percent_value(theme_data, value):
     display_themed_value(
@@ -867,8 +883,9 @@ class Stock:
     def stats():
         stock_theme_data = config.THEME_DATA['STATS']['STOCK']
         stocks_name = stock_theme_data.get("STOCKS", [])
-        stock = StockPrice()
-        stocks_data = stock.fetch_stock_data(stocks_name)
+        stock = StockData(stocks_name)
+        stocks_data = stock.fetch_stock_data()
+        print("Fetched stock data:", stocks_data)
         display_stock_value(stock_theme_data, stocks_data)
 
 
